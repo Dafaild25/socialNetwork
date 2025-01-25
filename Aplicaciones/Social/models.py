@@ -57,5 +57,12 @@ class Visitor(models.Model):
         return f"{self.names} {self.last_names}"
 
 
+class Publication(models.Model):
+    title = models.CharField(max_length=150)
+    description = models.TextField()
+    publication_date = models.DateTimeField(auto_now_add=True)
+    visitor = models.ForeignKey(Visitor, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.title
 

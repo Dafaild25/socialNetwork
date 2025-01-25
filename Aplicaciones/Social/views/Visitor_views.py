@@ -8,26 +8,7 @@ from ..models import *
 from django.contrib.auth.decorators import login_required
 
 
-@login_required
-def vistorHome(request):
-    user = request.user
-    print(f"Authenticated user: {user.username}")
 
-    try:
-        admin = user.admin  # Try to access the admin profile
-        admin_name = f'{admin.last_names} {admin.names}'
-        print(f"Admin profile found: {admin_name}")
-    except Admin.DoesNotExist:
-        admin = None
-        admin_name = user.username  # Fallback to username if the admin profile does not exist
-        print("Admin profile not found.")
-
-    context = {
-        'admin_name': admin_name,
-        'admin': admin,  # You can also pass the full admin object if needed
-    }
-    print(f"Context sent to the template: {context}")
-    return render(request, '../templates/AdminView/adminHome.html', context)
 
 
 # List all visitors

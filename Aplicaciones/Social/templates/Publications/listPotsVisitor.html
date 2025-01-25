@@ -1,0 +1,135 @@
+<div class="container m-0 p-0" >
+    <div class="row m-0">
+        <div class="col-8">
+            <h5>POST OF {{visitor.names}} {{visitor.last_names}} </h5>
+        </div>
+        <div class="col-4 text-end">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newPublicacionModal">New Post</button>
+    
+    
+        </div>
+    </div>
+    
+    
+    <div class="row m-0" id="publicaciones-Visitor">
+        {% if posts %}
+            {% for post in posts %}
+            <div class="col-12 mb-3">
+                <div class="row m-0">
+                    <!-- Columna para la publicación (izquierda) -->
+                    <div class="col-12 col-md-6">
+                        <div class="card p-3">
+                            <h6>{{ post.title }}</h6>
+                            <p>{{ post.description }}</p>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <button  class="btn btn-primary" type="button" onclick="selectPost({{post.id}})"><i class="fa fa-pen"></i> </button>
+                            
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-danger" data-visitor="{{ visitor.id }}" onclick="deletePost({{post.id}},this)"><i class="fa fa-trash"></i> </button>
+                                </div>
+                            </div>
+                            <small class="text-muted">Publicado el {{ post.publication_date|date:"d M Y" }}</small>
+                        </div>
+                    </div>
+    
+                    
+                    <div class="col-12 col-md-6">
+                        <div class="card p-3">
+                            
+                            <ul class="list-group" style="max-height: 90px; overflow-y: auto;">
+                                {% for comment in post.comments.all %}
+                                    <li class="list-group-item">
+                                        <strong>{{ comment.user_name }}</strong>: {{ comment.text }}
+                                    </li>
+                                {% empty %}
+                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">This user has no posts.</p>
+        {% endif %}
+    </div>
+    
+
+
+</div>
+
+
+
+<div class="modal fade" id="newPublicacionModal" tabindex="-1" aria-labelledby="nuevoPublicacionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nuevoPublicacionModalLabel">Crear nueva publicación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newPublicacionForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <input type="hidden" id="visitorId" name="visitor_id" class="form-control" required>
+                        <label for="titulo" class="form-label">Title</label>
+                        <input type="text" id="title" name="title" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Description</label>
+                        <textarea id="description" name="description" class="form-control" rows="3" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="createPost()" id="guardarPublicacionBtn">Guardar publicación</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="editPostModal" tabindex="-1" aria-labelledby="nuevoPublicacionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="nuevoPublicacionModalLabel">Edit this post</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editPublicacionForm">
+                    {% csrf_token %}
+                    <input type="hidden" id="editPostId">
+                    <input type="hidden" id="editVisitor_id">
+                    <div class="mb-3">
+                        <label for="editPostTitle" class="form-label">Title</label>
+                        <input type="text" id="editPostTitle" name="editPostTitle" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPostDescription" class="form-label">Description</label>
+                        <textarea id="editPostDescription" name="editPostDescription" class="form-control"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success" onclick="updatePost()"  id="guardarPublicacionBtn">Save Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

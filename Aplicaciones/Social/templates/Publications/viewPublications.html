@@ -1,0 +1,37 @@
+{% extends 'masterAdmin.html' %}
+{% load static %}
+{% block body %}
+
+<script src="{% static 'js/Publications/managerPublications.js' %}" defer></script>
+<div class="container m-0 p-0">
+    <div class="row m-0" style="width: 100%; margin: 0;">
+        <!-- Columna de usuarios -->
+        <div class="col-12 col-md-4 p-0">
+            <h5 class="mb-3">Visitor</h5>
+            <ul class="list-group">
+                {% for visitor in visitors %}
+                <li class="list-group-item">
+                    <a href="#" onclick="uploadPosts({{visitor.id}})" class="usuario-item" data-id="{{ visitor.id }}">
+                        {{ visitor.names }} {{ visitor.last_names }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Columna de publicaciones -->
+        <div class="col-12 col-md-8 p-0">
+            <h5 class="mb-3">Post</h5>
+          
+            <div class="container" id="publicaciones">
+                <p class="text-muted">Select a user to see their posts</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{%endblock%}

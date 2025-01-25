@@ -1,6 +1,8 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+
+from Aplicaciones.Social.views.Publicactions_views import *
 from .views.login_views import login_view,logout_view,register
 from .views.Admin_views  import adminHome ,listAdministrators,registerAdmin,deleteAdministrator,getAdministrator,updateAdministrator
 from .views.Visitor_views import deleteVisitor, getVisitor, listVisitors, registerVisitors, updateVisitor
@@ -27,6 +29,16 @@ urlpatterns = [
     path('getVisitor/<int:id>/', getVisitor, name='getVisitor'),
     path('updateVisitor/<int:id>/', updateVisitor, name='updateVisitor'),
     path('deleteVisitor/<int:id>/',deleteVisitor,name='deleteVisitor'),
+    
+    #URLS PUBLICATIONS
+    path('viewPublications/', viewPublications, name='viewPublications'),
+    path('listPostsVisitor/<int:visitor_id>/', listPostsVisitor, name='listPostsVisitor'),
+    path('createPost/', createPost, name='createPost'),
+    path('selectPost/<int:post_id>/', selectPost, name='selectPost'),
+    path('updatePost/<int:post_id>/', updatePost, name='updatePost'),
+    path('deletePost/<int:post_id>/', deletePost, name='deletePost'),
+    
+    
     
     
 

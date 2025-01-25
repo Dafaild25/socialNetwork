@@ -33,7 +33,7 @@ def register(request):
 
     try:
         admin = user.admin  # Attempt to access the admin profile
-        admin_name = f'{admin.last_names} {admin.names} '
+        admin_name = f' {admin.names} {admin.last_names} '
         print(f"Admin profile found: {admin_name}")
     except Admin.DoesNotExist:
         admin = None

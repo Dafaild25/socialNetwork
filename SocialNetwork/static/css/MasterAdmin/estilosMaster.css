@@ -86,3 +86,13 @@ footer p.copy {
 #main-content {
     flex: 1; /* El contenido principal ocupa el espacio restante */
 }
+
+
+#publicaciones {
+    padding: 0;              /* Sin padding */
+    margin: 0;    
+    width: 950px;           /* Sin margen */
+    height: 380px;           /* Ajusta la altura según lo necesites */
+    overflow-y: auto;        /* Habilita la barra de desplazamiento vertical cuando el contenido sobrepase */
+    border: 5px solid #111111;  /* Agregar un borde opcional para ver el contorno del div */
+}

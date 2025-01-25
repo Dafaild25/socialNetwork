@@ -32,7 +32,7 @@ def adminHome(request):
 
 # List all administrators
 def listAdministrators(request):
-    administrators = Admin.objects.all()  # Get all administrators
+    administrators = Admin.objects.all()  
     
     context = {
         'administrators': administrators
