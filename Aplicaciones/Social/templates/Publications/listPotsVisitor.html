@@ -12,46 +12,53 @@
     
     
     <div class="row m-0" id="publicaciones-Visitor">
-        {% if posts %}
-            {% for post in posts %}
+        {% if posts_with_comments %}
+            {% for item in posts_with_comments %}
             <div class="col-12 mb-3">
                 <div class="row m-0">
                     <!-- Columna para la publicación (izquierda) -->
                     <div class="col-12 col-md-6">
                         <div class="card p-3">
-                            <h6>{{ post.title }}</h6>
-                            <p>{{ post.description }}</p>
+                            <h6>{{ item.post.title }}</h6>
+                            <p>{{ item.post.description }}</p>
                             <div class="row text-center">
-                                <div class="col-6">
-                                    <button  class="btn btn-primary" type="button" onclick="selectPost({{post.id}})"><i class="fa fa-pen"></i> </button>
-                            
+                                <div class="col-4">
+                                    <button class="btn btn-primary" type="button" onclick="selectPost({{item.post.id}})"><i class="fa fa-pen"></i> </button>
                                 </div>
-                                <div class="col-6">
-                                    <button type="button" class="btn btn-danger" data-visitor="{{ visitor.id }}" onclick="deletePost({{post.id}},this)"><i class="fa fa-trash"></i> </button>
+                                <div class="col-4">
+                                    <button type="button" class="btn btn-danger" data-visitor="{{ visitor.id }}" onclick="deletePost({{item.post.id}}, this)"><i class="fa fa-trash"></i> </button>
+                                </div>
+                                <div class="col-4">
+                                    <button type="button" class="btn btn-success" onclick="openAddCommentModal({{item.post.id}})"><i class="fa fa-comments"></i> </button>
                                 </div>
                             </div>
-                            <small class="text-muted">Publicado el {{ post.publication_date|date:"d M Y" }}</small>
+                            <small class="text-muted">Publicado el {{ item.post.publication_date|date:"d M Y" }}</small>
                         </div>
                     </div>
     
-                    
+                    <!-- Columna para los comentarios (derecha) -->
                     <div class="col-12 col-md-6">
                         <div class="card p-3">
-                            
-                            <ul class="list-group" style="max-height: 90px; overflow-y: auto;">
-                                {% for comment in post.comments.all %}
-                                    <li class="list-group-item">
-                                        <strong>{{ comment.user_name }}</strong>: {{ comment.text }}
+                            <ul class="list-group" style="max-height: 125px; overflow-y: auto;">
+                                {% for comment in item.comments %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ comment.user.username }}</strong>: {{ comment.comment }}
+                                            <br>
+                                            <small class="text-muted">{{comment.comment_date}}</small>
+                                        </div>
+                                        <div class="btn-group" role="group" aria-label="Actions">
+                                            <!-- Botón de editar -->
+                                            <button class="btn btn-sm btn-primary" onclick="openEditCommentModal({{comment.id}})" title="Edit">
+                                                <i class="fas fa-pen"></i>
+                                            </button>
+                                            <!-- Botón de eliminar -->
+                                            <button class="btn btn-sm btn-danger" data-visitor="{{visitor.id}}" onclick="deleteComment({{comment.id}}, this)" title="Delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </li>
                                 {% empty %}
-                                    <li class="list-group-item text-muted">No comments yet.</li>
-                                    <li class="list-group-item text-muted">No comments yet.</li>
-                                    <li class="list-group-item text-muted">No comments yet.</li>
-                                    <li class="list-group-item text-muted">No comments yet.</li>
-                                    <li class="list-group-item text-muted">No comments yet.</li>
-                                    <li class="list-group-item text-muted">No comments yet.</li>
-                                    <li class="list-group-item text-muted">No comments yet.</li>
-                                    <li class="list-group-item text-muted">No comments yet.</li>
                                     <li class="list-group-item text-muted">No comments yet.</li>
                                 {% endfor %}
                             </ul>
@@ -64,6 +71,7 @@
             <p class="text-muted">This user has no posts.</p>
         {% endif %}
     </div>
+    
     
 
 
@@ -128,6 +136,63 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-success" onclick="updatePost()"  id="guardarPublicacionBtn">Save Edit</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar comentario -->
+<div class="modal fade" id="addCommentModal" tabindex="-1" aria-labelledby="addCommentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCommentModalLabel">Commnets</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addCommentForm">
+                    {% csrf_token %}
+                    <!-- Campo para el comentario -->
+                    <div class="mb-3">
+                        <input type="hidden" id="publication_id" name="publication_id" class="form-control" required>
+                        <input type="hidden" id="visitorComment_id" name="visitorComment_id" class="form-control" required>
+                        <label for="commentText" class="form-label">Comment</label>
+                        <textarea class="form-control" id="commentText" name="commentText" rows="4" required></textarea>
+                    </div>
+                    
+                    
+                </form>
+                
+            </div>
+            <button type="button" class="btn btn-primary" onclick="createCommenPublic()">Send</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- EDITAR COMNETARIO -->
+<div class="modal fade" id="editCommentModal" tabindex="-1" aria-labelledby="editCommentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCommentModalLabel">Commnets</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCommentForm">
+                    {% csrf_token %}
+                    <!-- Campo para el comentario -->
+                    <div class="mb-3">
+                        <input type="text" id="comment_id" name="comment_id" class="form-control" required>
+                        <input type="text" id="editVisitorComment_id" name="editVisitorComment_id" class="form-control" required>
+                        <label for="commentTextEdit" class="form-label">Comment</label>
+                        <textarea class="form-control" id="commentTextEdit" name="commentTextEdit" rows="4" required></textarea>
+                    </div>
+                    
+                    
+                </form>
+                
+            </div>
+            <button type="button" class="btn btn-primary" onclick="updateComment()">Send</button>
         </div>
     </div>
 </div>

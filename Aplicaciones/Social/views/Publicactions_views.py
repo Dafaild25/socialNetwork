@@ -39,9 +39,19 @@ def viewPublications(request):
 def listPostsVisitor(request, visitor_id):
     visitor = get_object_or_404(Visitor, id=visitor_id)
     posts = Publication.objects.filter(visitor=visitor_id)
+    
+    posts_with_comments = []
+    for post in posts:
+        # Agregamos los comentarios de la publicación a un diccionario
+        comments = post.comment_set.all()  # Relación inversa de 'publication' en el modelo Comment
+        posts_with_comments.append({
+            'post': post,
+            'comments': comments,
+        })
+    
     context={
         'visitor': visitor,
-        'posts': posts,
+        'posts_with_comments': posts_with_comments, 
     }
     return render(request, '../templates/Publications/listPotsVisitor.html', context)
 
@@ -131,24 +141,24 @@ def updatePost(request, post_id):
 def deletePost(request, post_id):
     if request.method == 'DELETE':
         try:
-            # Obtén la publicación (post) por su ID
+            # Obtén la publicación por su ID
             post = Publication.objects.get(id=post_id)
 
             # Verifica si la publicación tiene comentarios asociados
-            if post.comments.exists():  # Si tiene comentarios, no permitimos la eliminación
+            if Comment.objects.filter(publication=post).exists():  # Filtra los comentarios relacionados
                 return JsonResponse({
                     'status': False,
                     'message': 'Post cannot be deleted because it has associated comments.'
                 }, status=400)
 
-            # Si no tiene comentarios, procedemos con la eliminación
+            # Si no tiene comentarios, procede a eliminar la publicación
             post.delete()
 
             return JsonResponse({
                 'status': True,
                 'message': 'Post successfully deleted.'
             }, status=200)
-        
+
         except Publication.DoesNotExist:
             return JsonResponse({'status': False, 'message': 'Post not found.'}, status=404)
         except Exception as e:

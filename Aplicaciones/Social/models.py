@@ -66,3 +66,12 @@ class Publication(models.Model):
     def __str__(self):
         return self.title
 
+class Comment(models.Model):
+    comment = models.TextField()
+    comment_date = models.DateTimeField(auto_now_add=True)
+    edited_date = models.DateTimeField(null=True, blank=True)
+    publication = models.ForeignKey(Publication, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.comment

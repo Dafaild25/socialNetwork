@@ -2,6 +2,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 
+from Aplicaciones.Social.views.Comment_views import createComment, deleteComment, selectComment, updateComment
 from Aplicaciones.Social.views.Publicactions_views import *
 from .views.login_views import login_view,logout_view,register
 from .views.Admin_views  import adminHome ,listAdministrators,registerAdmin,deleteAdministrator,getAdministrator,updateAdministrator
@@ -38,6 +39,12 @@ urlpatterns = [
     path('updatePost/<int:post_id>/', updatePost, name='updatePost'),
     path('deletePost/<int:post_id>/', deletePost, name='deletePost'),
     
+    
+    # comments
+    path('createComment/',createComment, name='createComment'),
+    path('selectComment/<int:comment_id>/', selectComment, name='selectComment'),
+    path('updateComment/<int:comment_id>/', updateComment, name='updateComment'),
+    path('deleteComment/<int:comment_id>/', deleteComment, name='deleteComment'),
     
     
     

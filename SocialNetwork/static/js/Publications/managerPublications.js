@@ -8,6 +8,8 @@ function uploadPosts(visitorId) {
             // Limpia el contenido actual
             publicacionesDiv.innerHTML = html;
             document.getElementById('visitorId').value = visitorId;
+            document.getElementById('visitorComment_id').value = visitorId;
+            document.getElementById('editVisitorComment_id').value = visitorId;
             
 
         })
@@ -35,7 +37,7 @@ function createPost() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'ok') {
-            alert('Publicación creada exitosamente');
+            alert('post created successfully');
             
             // Cerrar el modal usando bootstrap.Modal
             const modalElement = document.getElementById('newPublicacionModal');
@@ -88,6 +90,7 @@ function updatePost() {
     const post_id = document.getElementById('editPostId').value;
     const visitor_id = document.getElementById('editVisitor_id').value;
     
+    
     fetch(`/updatePost/${post_id}/`, {
         method: 'POST',
         body: formData,
@@ -100,7 +103,7 @@ function updatePost() {
         })
         .then(data => {
             console.log(data);
-            alert('Publicación actualizada con éxito');
+            alert('Post updated successfully');
             
 
 
@@ -125,7 +128,7 @@ function updatePost() {
 
 function deletePost(post_id,button) {
     
-    const confirmation = confirm("¿Estás seguro de que deseas eliminar esta publicación?");
+    const confirmation = confirm("¿Dou you want to delete this post?");
     if (!confirmation) return;
     const visitor_id = button.dataset.visitor;
 
@@ -165,4 +168,131 @@ function getCookie(name) {
         }
     }
     return null;
+}
+
+
+function openAddCommentModal(publication_id) {
+    // Establecer el publication_id en el formulario del modal
+    document.getElementById('publication_id').value = publication_id;
+
+    var myModal = new bootstrap.Modal(document.getElementById('addCommentModal'));
+    myModal.show();
+}
+
+function createCommenPublic() {
+    const formData = new FormData(document.getElementById('addCommentForm'));
+    const visitor_id = document.getElementById('visitorComment_id').value;
+    fetch('/createComment/', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'ok') {
+
+            alert(data.message); // Mensaje del servidor en caso de éxito
+            const modalElement = document.getElementById('addCommentModal');
+            const myModal = bootstrap.Modal.getInstance(modalElement); // Obtener la instancia del modal
+            myModal.hide();  // Cerrar el modal
+
+            // Esperar un momento antes de recargar los datos
+            setTimeout(() => {
+                uploadPosts(document.getElementById('visitorId').value);
+            }, 500);
+            
+            uploadPosts(visitor_id); // Recarga la página para reflejar los cambios
+        } else {
+            alert('Error: ' + data.message); // Mensaje del servidor en caso de fallo
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al intentar crear el comentario.');
+    });
+}
+
+function openEditCommentModal(comment_id) {
+    // Establecer el comment_id en el formulario del modal
+    document.getElementById('comment_id').value = comment_id;
+
+    // Realizar la solicitud para obtener el comentario
+    fetch(`/selectComment/${comment_id}/`)
+        .then(response => response.json())
+        .then(data => {
+            // Establecer el comentario en el campo correspondiente del formulario
+            document.getElementById('commentTextEdit').value = data.comment;
+            var myModal = new bootstrap.Modal(document.getElementById('editCommentModal'));
+            myModal.show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Hubo un error al cargar el comentario');
+        });
+
+    // Mostrar el modal
+    
+}
+
+
+function updateComment() {
+    const formData = new FormData(document.getElementById('editCommentForm'));
+    const comment_id = document.getElementById('comment_id').value;
+    const visitor_id = document.getElementById('editVisitorComment_id').value;
+    fetch(`/updateComment/${comment_id}/`, {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            alert(data.message); // Mensaje del servidor en caso de éxito
+            const modalElement = document.getElementById('editCommentModal');
+            const myModal = bootstrap.Modal.getInstance(modalElement); // Obtener la instancia del modal
+            myModal.hide();  // Cerrar el modal
+
+            // Esperar un momento antes de recargar los datos
+            setTimeout(() => {
+                uploadPosts(document.getElementById('visitorId').value);
+            }, 500);
+            
+            uploadPosts(visitor_id); // Recarga la página para reflejar los cambios
+        } else {
+            alert('Error: ' + data.message); // Mensaje del servidor en caso de fallo
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al intentar actualizar el comentario.');
+    });
+}
+
+function deleteComment(comment_id,button) {
+    const confirmation = confirm("¿do you want to delete this comment?");
+    if (!confirmation) return;
+    const visitor_id = button.dataset.visitor;
+
+    fetch(`/deleteComment/${comment_id}/`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken') // Si usas protección CSRF
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Error al intentar eliminar el comentario");
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status) {
+            alert(data.message); // Mensaje del servidor en caso de éxito
+            uploadPosts(visitor_id);// Recarga la página para reflejar los cambios
+        } else {
+            alert('Error: ' + data.message); // Mensaje del servidor en caso de fallo
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Ocurrió un error al intentar eliminar el comentario.');
+    });
 }
