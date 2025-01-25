@@ -1,0 +1,88 @@
+/* Estilo general para el navbar */
+.navbar {
+    background: linear-gradient(90deg, #4c4b63, #2c2b40); /* Gradiente elegante */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra */
+}
+
+/* Marca (logo o título) */
+.navbar-brand {
+    font-family: 'Georgia', serif; /* Fuente elegante */
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #f7d794; /* Dorado claro */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Sombra en el texto */
+}
+
+.navbar-brand:hover {
+    color: #ffeaa7; /* Dorado más brillante al pasar el cursor */
+}
+
+/* Links de navegación */
+.navbar-nav .nav-link {
+    font-size: 1rem;
+    color: #dfe6e9; /* Gris claro */
+    padding: 8px 15px;
+    transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    background-color: #706fd3; /* Morado elegante */
+    color: #ffffff; /* Texto blanco */
+    border-radius: 5px; /* Esquinas redondeadas */
+}
+
+/* Estilo del botón de menú en pantallas pequeñas */
+.navbar-toggler {
+    border: none;
+    background-color: #706fd3; /* Morado del tema */
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(255, 245, 235, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Fondo del cuerpo */
+body {
+    background: #f3f1f1; /* Fondo claro */
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh; /* Altura mínima para el contenido */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Footer */
+footer {
+    background: linear-gradient(90deg, #4c4b63, #2c2b40); /* Mismo gradiente que el navbar */
+    color: #dfe6e9; /* Gris claro */
+    text-align: center;
+    padding: 20px;
+    margin-top: auto; /* Mantiene el footer en la parte inferior */
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.2); /* Sombra superior */
+}
+
+footer h5 {
+    color: #f7d794; /* Dorado claro */
+    font-family: 'Georgia', serif;
+    font-size: 1.2rem;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+footer hr {
+    border-top: 1px solid #706fd3; /* Morado del tema */
+    width: 50%;
+    margin: 10px auto;
+}
+
+footer p.copy {
+    font-size: 0.8rem;
+    margin-top: 10px;
+}
+
+/* Ajustes para que el contenido principal no tape el footer */
+#main-content {
+    flex: 1; /* El contenido principal ocupa el espacio restante */
+}

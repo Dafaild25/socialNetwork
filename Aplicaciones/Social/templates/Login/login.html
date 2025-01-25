@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Network - Login</title>
+
+    <script src="{% static 'js/Login/loginSocial.js' %}" defer></script>
+
+    <!-- Importing jQuery -->
+    <script src="{% static 'plantilla/assets/js/core/jquery-3.7.1.min.js' %}"></script>
+
+    <!-- Importing Bootstrap -->
+    <script src="{% static 'plantilla/assets/js/core/popper.min.js' %}"></script>
+    <script src="{% static 'plantilla/assets/js/core/bootstrap.min.js' %}"></script>
+
+    <!-- Importing FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Importing custom styles -->
+    <link rel="stylesheet" href="{% static 'plantilla/assets/css/bootstrap.min.css' %}" />
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: 'Public Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            width: 40%;
+            background: #fff;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-container h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-container .inp {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-container .inp input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-container .inp i {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+        }
+
+        .form-container .submit {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: #6c63ff;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-container .submit:hover {
+            background-color: #5b54d6;
+        }
+
+        .gallery-banner {
+            flex: 1;
+            background: url('{% static "/img/fondo.jpg" %}') no-repeat center center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+
+        .gallery-banner h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .gallery-banner img {
+            margin-top: 1.5rem;
+            max-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Login form -->
+        <div class="form-container">
+            <form method="POST" class="form" autocomplete="off">
+                {% csrf_token %}
+                <h1>Login</h1>
+                <div class="inp">
+                    <input type="text" id="username" name="username" placeholder="Username"  value="">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="inp">
+                    <input type="password" id="password" name="password" placeholder="Password" value="">
+                    <i class="fa-solid fa-eye" id="showPassword" style="cursor: pointer;"></i>
+                </div>
+                <button type="submit" class="submit">Log In</button>
+            </form>
+        </div>
+
+        <!-- Gallery banner -->
+        <div class="gallery-banner">
+            <h1>Welcome to the Art Gallery</h1>
+            <img src="{% static '/img/arte.jpg' %}" alt="Logo">
+        </div>
+    </div>
+
+   <!-- Modal to show authentication error messages -->
+   <div class="modal fade" id="errorModalAuthentication" tabindex="-1" role="dialog" aria-labelledby="errorModalAuthenticationLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <center>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p>{{ message }}</p>  <!-- Display the error message here -->
+                        {% endfor %}
+                    {% endif %}
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Show modal if there is an error message -->
+{% if messages %}
+  <script>
+    $(document).ready(function() {
+      $('#errorModalAuthentication').modal('show');
+    });
+  </script>
+{% endif %}
+
+</body>
+</html>

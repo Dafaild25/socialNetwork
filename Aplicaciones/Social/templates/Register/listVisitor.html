@@ -1,0 +1,204 @@
+<div class="row">
+    <div class="col-6">
+        <h3 class="text-center">Visitors</h3>
+    </div>
+    <div class="col-6 d-flex justify-content-end align-items-start">
+        <!-- Button to open the modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddVisitor">
+            <i class="fas fa-add"></i> Add Visitors
+        </button>
+    </div>
+</div>
+
+
+
+<div class="table-responsive mt-3">
+    <table class="table table-hover table-striped table-responsive align-middle text-center" id="tbl-visitor">
+
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>ID Number</th>
+                <th>Names</th>
+                <th>Last names</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for visitor in visitors %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ visitor.id_number }} </td>
+                    <td>{{ visitor.names }} </td>
+                    <td>{{ visitor.last_names }}</td>
+                    <td>{{ visitor.phone }}</td>
+                    <td>{{ visitor.email }}</td>
+                    <td>
+                        <a href="#" class="btn btn-outline-warning btn-circle" onclick="getVisitor({{visitor.id}})" aria-label="Edit Visitor">
+                            <i class="fas fa-pencil"></i>
+                        </a>
+                        <a href="#" class="btn btn-danger"onclick="deleteVisitor({{visitor.id}})" aria-label="Delete Visitor">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No Visitors registered.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal to add Visitor -->
+<div class="modal fade" id="modalAddVisitor" tabindex="-1" aria-labelledby="modalAddVisitorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAddVisitorLabel">Add Administrator</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Administrator registration form -->
+                <form method="post" id="registerVisitor">
+                    {% csrf_token %}
+                    <input type="hidden" id="userVisitor" name="userVisitor" value="visitor">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_visitor">ID Number:</label>
+                            <input type="text" name="id_number_visitor" id="id_number_visitor" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone_visitor">Phone:</label>
+                            <input type="text" name="phone_visitor" id="phone_visitor" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                       
+                            <label for="names">Names:</label>
+                            <input type="text" name="names" id="names" class="form-control" required>                  
+                        
+                    </div>
+                    <div class="row mb-3">
+                        
+                            <label for="last_names">Last Names:</label>
+                            <input type="text" name="last_names" id="last_names" class="form-control" required>
+
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="email_visitor">Email:</label>
+                            <input type="email" name="email_visitor" id="email_visitor" class="form-control" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="saveVisitorData()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal to edit Visitor -->
+<div class="modal fade" id="modalEditVisitor" tabindex="-1" aria-labelledby="modalEditAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditAdminLabel">Edit Administrator</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditVisitor">
+                    {% csrf_token %}
+                    <input type="hidden" id="visitorId" name="visitorId">
+                    
+                    <!-- User and Password -->
+                    <div class="row">
+                        <h4 class="text-center mb-3">User and Password</h4>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" id="editUsernameVisitor" name="username" class="form-control" placeholder="Username">
+                                <label for="editUsernameVisitor">Username</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="password" id="editPasswordVisitor" name="password" class="form-control" placeholder="New Password">
+                                <label for="editPasswordVisitor">New Password</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    
+                    <!-- General Information -->
+                    <div class="row">
+                        <h4 class="text-center mb-3">General Information</h4>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" id="editIdVisitor" name="id_number" class="form-control" placeholder="ID">
+                                <label for="editIdVisitor">ID_Number</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+                    
+                    </div>
+
+                    <div class="row mt-3">
+                        
+                            <div class="form-floating">
+                                <input type="text" id="editNamesVisitor" name="editNamesVisitor" class="form-control" placeholder="First Name">
+                                <label for="editNamesVisitor">First Name</label>
+                            </div>
+                       
+                        
+                    </div>
+
+                    <div class="row mt-3">
+                        
+                            <div class="form-floating">
+                                <input type="text" id="editLastNamesVisitor" name="editLastNamesVisitor" class="form-control" placeholder="Last Name">
+                                <label for="editLastNamesVisitor">Last Names</label>
+                            </div>
+                        
+                        
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" id="editPhoneVisitor" name="editPhoneVisitor" class="form-control" placeholder="Phone">
+                                <label for="editPhoneVisitor">Phone</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email" id="editEmailVisitor" name="editEmailVisitor" class="form-control" placeholder="Email">
+                                <label for="editEmailVisitor">Email</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    
+                    <!-- Action Buttons -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-success w-100" onclick="updateVisitor()">Save Changes</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

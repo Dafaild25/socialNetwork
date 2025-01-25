@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>SocialNetwork</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport" />
+
+    <link rel="stylesheet" href="{% static 'css/MasterAdmin/estilosMaster.css' %}">
+    
+    
+
+    <!-- Importing jQuery -->
+    <script src="{% static 'plantilla/assets/js/core/jquery-3.7.1.min.js' %}"></script>
+
+    <!-- Importing SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Importing Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{% static 'plantilla/assets/css/bootstrap.min.css' %}" />
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand" href="{% url 'adminHome' %}">SocialNetwork</a>
+            
+            <!-- Toggler -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Navbar Content -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <!-- Centered Links -->
+                <div class="navbar-nav mx-auto">
+                    <a class="nav-link" aria-current="page" href="{% url 'register' %}">Users</a>
+                    <a class="nav-link" href="#">Publicactions</a>
+                   
+                </div>
+                
+                <!-- Right Aligned Dropdown -->
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle btn btn-primary text-light" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Welcome, {{ admin_name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#adminModal">
+                                    <i class="fas fa-user-alt"></i> &nbsp; Profile
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'logout_view' %}">
+                                    <i class="fas fa-sign-in-alt"></i> &nbsp; Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+    </nav>
+
+    
+
+    <div id="toastError" 
+        class="toast position-fixed top-0 start-50 translate-middle-x" 
+        role="alert" 
+        aria-live="assertive" 
+        aria-atomic="true" 
+        style="z-index: 1080; display: none; margin-top: 20px;">
+        <div class="toast-header" style="background-color: rgb(255, 0, 0); color: white;">
+            <strong class="me-auto">Error</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastErrorMessage">
+            <!-- Error message will be displayed here -->
+        </div>
+    </div>
+
+    <div id="toastSuccess" class="toast position-absolute top-10 start-50 translate-middle-x" role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 1055; display: none; top: 30px;">
+        <div class="toast-header bg-success text-white">
+        <strong class="me-auto">Success</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastSuccessMessage">
+        <!-- Success message will be displayed here -->
+        </div>
+    </div>
+
+    
+    <div id="confirmationModal" class="modal fade" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #ffc107; color: #000;">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete ?
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <!-- Page Content -->
+        {% block body %}
+
+
+
+        {% endblock %}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="adminModal" tabindex="-1" aria-labelledby="adminModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="adminModalLabel">Administrator Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>ID:</strong> {{ admin.id_number }}</p>
+                    <p><strong>First Name:</strong> {{ admin.first_name }} {{ admin.middle_name }}</p>
+                    <p><strong>Last Name:</strong> {{ admin.last_name }}</p>
+                    <p><strong>Mother's Last Name:</strong> {{ admin.second_last_name }}</p>
+                    <p><strong>Phone:</strong> {{ admin.phone }}</p>
+                    <p><strong>Email:</strong> {{ admin.email }}</p>
+
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for mensaje in messages %}
+            {% if mensaje.tags == 'success' %}
+                <script>
+                    Swal.fire({
+                        title: "Confirmed",
+                        text: "{{mensaje}}",
+                        icon: "success",
+                    });
+                </script>
+            {% endif %}
+
+        {% endfor %}
+
+    {% endif %}
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <h5>Social Network</h5>
+            <p>Explore and enjoy the pulications.</p>
+            <hr class="bg-white mt-4">
+            <p>&copy; 2025 SocialNetwork | All rights reserved</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'plantilla/assets/js/core/popper.min.js' %}"></script>
+
+    <!-- Core JS Files -->
+    <script src="{% static 'plantilla/assets/js/core/bootstrap.min.js' %}"></script>
+
+    <!-- Datatables -->
+    <script src="{% static 'plantilla/assets/js/plugin/datatables/datatables.min.js' %}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,202 @@
+<div class="row">
+    <div class="col-6">
+        <h3 class="text-center">Administrators</h3>
+    </div>
+    <div class="col-6 d-flex justify-content-end align-items-start">
+        <!-- Button to open the modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAddAdmin">
+            <i class="fas fa-add"></i> Add Administrator
+        </button>
+    </div>
+</div>
+
+
+
+<div class="table-responsive mt-3">
+    <table class="table table-bordered table-striped table-hover w-100 mx-auto" id="tbl-admin">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                
+                <th>ID Number</th>
+                <th>Names</th>
+                <th>Lasts Names</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for admin in administrators %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    
+                    <td>{{ admin.id_number }}</td>
+                    <td>{{ admin.names }}</td>
+                    <td>{{ admin.last_names }}</td>
+                    <td>{{ admin.phone }}</td>
+                    <td>{{ admin.email }}</td>
+                    <td>
+                        <a href="#" class="btn btn-outline-warning btn-circle" onclick="getAdministrator({{ admin.id }})">
+                            <i class="fas fa-pencil"></i>
+                        </a>
+                        <a href="#" onclick="deleteAdministrator({{ admin.id }})" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No administrators registered.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal to add admin -->
+<div class="modal fade" id="modalAddAdmin" tabindex="-1" aria-labelledby="modalAddAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAddAdminLabel">Add Administrator</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Administrator registration form -->
+                <form method="post" id="registerAdmin">
+                    {% csrf_token %}
+                    <input type="text" id="userAdmin" name="userAdmin" value="admin">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="id_admin">ID Number:</label>
+                            <input type="text" name="id_number_admin" id="id_number_admin" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone_admin">Phone:</label>
+                            <input type="text" name="phone_admin" id="phone_admin" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="names">Names:</label>
+                            <input type="text" name="names" id="names" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="last_names">Last Names:</label>
+                            <input type="text" name="last_names" id="last_names" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="email_admin">Email:</label>
+                            <input type="email" name="email_admin" id="email_admin" class="form-control" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" onclick="saveAdminData()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal to edit admin -->
+<div class="modal fade" id="modalEditAdmin" tabindex="-1" aria-labelledby="modalEditAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditAdminLabel">Edit Administrator</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formEditAdmin">
+                    <input type="hidden" id="adminId">
+                    
+                    <!-- User and Password -->
+                    <div class="row">
+                        <h4 class="text-center mb-3">User and Password</h4>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" id="editUsernameAdmin" name="username" class="form-control" placeholder="Username">
+                                <label for="editUsernameAdmin">Username</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="password" id="editPasswordAdmin" name="password" class="form-control" placeholder="New Password">
+                                <label for="editPasswordAdmin">New Password</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    
+                    <!-- General Information -->
+                    <div class="row">
+                        <h4 class="text-center mb-3">General Information</h4>
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" id="editIdAdmin" name="id_number" class="form-control" placeholder="ID">
+                                <label for="editIdAdmin">ID_Number</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+                    
+                    </div>
+
+                    <div class="row mt-3">
+                        
+                            <div class="form-floating">
+                                <input type="text" id="editNamesAdmin" name="editNamesAdmin" class="form-control" placeholder="Names">
+                                <label for="editNamesAdmin">Names</label>
+                            </div>
+                        
+                
+                    </div>
+
+                    <div class="row mt-3">
+                        
+                            <div class="form-floating">
+                                <input type="text" id="editLastNamesAdmin" name="editLastNamesAdmin" class="form-control" placeholder="Last Name">
+                                <label for="editLastNamesAdmin">Last Names</label>
+                            </div>
+                       
+                        
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" id="editPhoneAdmin" name="phone" class="form-control" placeholder="Phone">
+                                <label for="editPhoneAdmin">Phone</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email" id="editEmailAdmin" name="email" class="form-control" placeholder="Email">
+                                <label for="editEmailAdmin">Email</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    
+                    <!-- Action Buttons -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-success w-100" onclick="updateAdministrator()">Save Changes</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
